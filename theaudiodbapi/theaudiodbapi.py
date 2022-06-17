@@ -29,6 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 class TheAudioDBApi:
     """ Main class to control the TheAudioDB API"""
     _api_key: str = None
+    _session: ClientSession = None
     def __init__(
         self,
         *,
@@ -43,10 +44,7 @@ class TheAudioDBApi:
     )
     async def _request(self, method, uri, **kwargs) -> ClientResponse:
         """Make a request."""
-        if self.token_refresh_method is not None:
-            self.token = await self.token_refresh_method()
-            _LOGGER.debug(f'Token refresh method called.')
-        
+
         url = URL.build(
             scheme='https',
             host=API_HOST,
@@ -72,7 +70,7 @@ class TheAudioDBApi:
             self._close_session = True
 
         try:
-            with async_timeout.timeout(self.request_timeout):
+            with async_timeout.timeout(8):
                 response =  await self._session.request(
                     method,
                     f"{url}",
@@ -123,8 +121,15 @@ class TheAudioDBApi:
         data = await self._request("GET", f"/searchtrack.php",params={"s":artist, "t":track})
         if not 'track' in data or len(data['track']) == 0:
             return None
-        return TheAudioDBTrackInfo(data['track'][0])
-        
+        return TheAudioDBTrackInfo(data=data['track'][0])
+    
+    async def close(self) -> None:
+        """Close open client session."""
+        if self._session and self._close_session:
+            await self._session.close()
+            _LOGGER.debug(f'Session closed.')
+
+
     async def __aenter__(self) -> TheAudioDBApi:
         """Async enter."""
         return self

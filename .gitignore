@@ -20,3 +20,4 @@ __pycache__/
 .pytest_cache/
 my_token.py
 .pypirc
+tests/api_key.py

@@ -1,10 +1,7 @@
 from __future__ import annotations
-from array import array
-from enum import Enum
-from typing import Any, Dict, Optional, TypedDict
+from typing import Any, Dict
 
 from dataclasses import dataclass
-from datetime import datetime
 from .utils import try_get_from_dict
 
 @dataclass

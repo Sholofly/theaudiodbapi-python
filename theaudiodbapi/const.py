@@ -1,5 +1,4 @@
-"""Geocaching Api Constants."""
-from .models import GeocachingApiEnvironment, GeocachingApiEnvironmentSettings
+"""TheAudioDB Api Constants."""
 
 API_HOST = 'theaudiodb.p.rapidapi.com'
 
